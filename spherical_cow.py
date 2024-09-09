@@ -1,77 +1,149 @@
 
 import math
-
+import numpy as np
+import matplotlib.pyplot as plt
 
 #################################### global constants ####################################
-gravf_strength = 9.81
+gravf_strength = 9.81 # in m/s^2
 mass = 1000
-drag_const = 10 # can be anything
+drag_const = 0.47 # for a spherical object
 
 ################################# user defined constants #################################
-v0 = $1     # in (vx0, vy0), a touple
-p0 = $2     # in (x0, y0)
-v = []
-p = []
-v[0] = v0   # lists of touples
-p[0] = p0   # lists of touples
-num_of_timesteps = $3 # number of plot points, in time
+v0 = (10, 10)     # in (vx0, vy0), a touple
+p0 = (0, 150)     # in (x0, y0)
+v_list = []
+p_list = []
+E_list = []
+
+# num_of_timesteps = $3
+size_of_timesteps = 0.1 # size of plot points, in seconds
+ 
+##################################### helper functions ##########################################
+def find_force(v_now, p_now):
+    """
+    Finding the force acted on the cow at any given velocity vector and xy position.
+        v_now -- a touple that shows the current velocity in vx, vy
+        p_now -- a touple that shows the current position in px, py
+    """
+    vx_now = v_now[0]
+    vy_now = v_now[1]
+    force_x = -drag_const * vx_now ** 2 * mass
+    force_y = (-gravf_strength + drag_const * vy_now ** 2) * mass
+    return force_x, force_y
+
+def find_vp(v_now, p_now, small_time): # small_time should be size_of_timesteps
+    """
+    Finding the next instance of velocity and position based on the current set.
+        v_now -- a touple that shows the current velocity in vx, vy
+        p_now -- a touple that shows the current position in px, py
+        small_time -- the time step size in unit of seconds of the next instance
+    """
+    force_x, force_y = find_force(v_now, p_now)
+    ax = force_x / mass
+    ay = force_y / mass
+
+    vx_now, vy_now = v_now[0], v_now[1]
+    vx_new = vx_now + ax * small_time
+    vy_new = vy_now + ay * small_time
+    v_new = (vx_new, vy_new)
+
+    px_now, py_now = p_now[0], p_now[1]
+    px_new = px_now + vx_now * small_time
+    py_new = py_now + vy_now * small_time
+    p_new = (px_new, py_new)
+    
+    return (v_new, p_new)
+
+
+def find_energies(v_now, p_now):
+    """
+        Finding the kinetic and potential energy of any given velocity vector and xy coord.
+        v_now -- a touple that shows the current velocity in vx, vy
+        p_now -- a touple that shows the current position in px, py
+    """
+    height = p_now[1]
+    PE = mass * gravf_strength * height
+
+    vx_now, vy_now = v_now[0], v_now[1]
+    KE = 1/2 * mass * math.sqrt(vx_now ** 2 + vy_now ** 2) **2
+
+    TE = PE + KE
+
+    return (PE, KE, TE)
+
+
+##################################### main method ##########################################
 
 if __name__ == "__main__":
+    '''
+        Main Method
+    '''
+    v_list.append(v0)   # adding to the lists of touples for velocity
+    p_list.append(p0)  # adding to the lists of touples for position
+    v_current = v0
+    p_current = p0
+    E_current = find_energies(v_current, p_current) # finding energy for now
+    E_list.append(E_current) # append current energy to the energy list
 
+    '''
+    x_list2 = []
+    y_list2 = []
+    print(F"STARTING")
+    time = np.arange(0,100,0.1)
+    for i in time:
+        if i == 0:
+            print(f"time: {i}")
+            v_cur, p_cur = find_vp(v_current, p_current, i)
+            x_list2.append(p_cur[0])
+            y_list2.append(p_cur[1])
+            print(f"current vel: {v_cur}")
+            print(f"current pos: {p_cur}")
+        else:
+            print(f"time: {i}")
+            v_cur, p_cur = find_vp(v_cur, p_cur, i)
+            x_list2.append(p_cur[0])
+            y_list2.append(p_cur[1])
+            print(f"current vel: {v_cur}") 
+            print(f"current pos: {p_cur}")
+        if p_cur[1]<0:
+            break
+    '''
 
-### check if the initial values are valid
-a = 1/2 * -gravf_strength
-b = v[0][1]
-c = p[0][1]
-discriminant = b**2 - 4*a*c
-
-if discriminant < 0:
-    print('You have entered a set of non-realistic projectile motion parameters, please try again.')
-else:
-    ### solve for landing time using quadratic formula equation
-    time_land = (-b + math.sqrt(discriminant)) / (2*a)
-    size_of_timesteps = time_land / num_of_timesteps
-
-    ##################################### functions ##########################################
-    def find_force(v_now, p_now):
-        """
-        Finding the force acted on the cow at any given velocity vector and xy position.
-            v_now -- a touple that shows the current velocity in vx, vy
-            p_now -- a touple that shows the current position in px, py
-        """
-        force_x = drag_const * v_now[0] ** 2 * mass
-        force_y = (-gravf_strength * drag_const * v_now[1] ** 2) * mass
-        return (force_x, force_y)
-
-    def find_vp(v_now, p_now, small_time): # small_time should be size_of_timesteps
-        """
-        Finding the next instance of velocity and position based on the current set.
-            v_now -- a touple that shows the current velocity in vx, vy
-            p_now -- a touple that shows the current position in px, py
-            small_time -- the time step size in unit of seconds of the next instance
-        """
-        ax = find_force(v_now, p_now)[0] / mass
-        ay = find_force(v_now, p_now)[1] / mass
-
-        vx_new = v_now[0] + ax * small_time
-        vy_new = v_now[1] + ay * small_time
-        v_new = (vx_new, vy_new)
-
-        px_new = p_now[0] + v_now[0] * small_time
-        py_new = p_now[1] + v_now[1] * small_time
-        p_new = (px_new, py_new)
-        
-        return (v_new, p_new)
-
-
-    def find_energies(v_now, p_now):
-        """
-            Finding the kinetic and potential energy of any given velocity vector and xy coord.
-            v_now -- a touple that shows the current velocity in vx, vy
-            p_now -- a touple that shows the current position in px, py
-        """
-        PE = mass * gravf_strength * v_now[1]
-        KE = 1/2 * mass * math.sqrt(v_now[0] ** 2 + v_now[1] ** 2)
-        return (PE, KE, PE + KE)
+    while (p_current[1] >= 0): # while the object has not hit the ground, or y is non-negative
+        v_current, p_current = find_vp(v_current, p_current, size_of_timesteps)
+        v_list.append(v_current)
+        p_list.append(p_current)
+        # E_list.append(find_energies(v_current, p_current))
     
 
+    x_list, y_list = zip(*p_list)
+    print(x_list)
+    print(y_list)
+
+    plt.plot(x_list, y_list,
+            color = '#fc5a50', # coral
+            marker = "*",
+            linestyle = "None",
+            markersize = 10,
+            label = "Position")
+    plt.title('Spherical Cow - Position Trajectory')
+    plt.xlabel('X Axis')
+    plt.ylabel('Y Axis')
+
+    plot_destination = "cow_figures/cow_traj.png"
+    plt.savefig(plot_destination)
+
+    '''
+    plt.plot(x_list2, y_list2,
+        color = '#fc5a50', # coral
+        marker = "d",
+        linestyle = "None",
+        markersize = 10,
+        label = "Position")
+    plt.title('Spherical Cow - Position Trajectory')
+    plt.xlabel('X Axis')
+    plt.ylabel('Y Axis')
+
+    plot_destination = "cow_figures/cow_traj2.png"
+    plt.savefig(plot_destination)
+    '''
