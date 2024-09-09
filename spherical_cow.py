@@ -65,7 +65,7 @@ def find_energies(v_now, p_now):
     PE = mass * gravf_strength * height
 
     vx_now, vy_now = v_now[0], v_now[1]
-    KE = 1/2 * mass * math.sqrt(vx_now ** 2 + vy_now ** 2)
+    KE = 1/2 * mass * math.sqrt(vx_now ** 2 + vy_now ** 2) **2
 
     TE = PE + KE
 
