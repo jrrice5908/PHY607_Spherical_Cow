@@ -159,7 +159,7 @@ if __name__ == "__main__":
 
     '''
     plt.plot(x_list2, y_list2,
-        color = '#fc5a50', # coral
+        color = '#fc5a50', # coral 
         marker = "d",
         linestyle = "None",
         markersize = 10,
