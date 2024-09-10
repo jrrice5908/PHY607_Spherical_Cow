@@ -7,7 +7,7 @@ import pandas as pd
 
 def cow_force(v, pos, k):
 	grav  = np.array([0, m * (-9.8)])
-	w_res = (-1) *k * np.linalg.norm(v) * np.sqrt(v.dot(v))**2
+	w_res = (-1) *k * v/np.linalg.norm(v) * (v.dot(v))
 	force = np.add(grav, w_res)
 	return force 
 
@@ -30,7 +30,7 @@ v = np.array([1,100])
 pos = np.array([0, 1000])
 step = 0.001
 m = 1000
-k = 0
+k = 4
 x = []
 y = []
 Ti = []
