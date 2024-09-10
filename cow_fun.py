@@ -14,7 +14,7 @@ def cow_force(v, pos):
 ########## pos vec update ############
 
 def cow_update(v, pos, force, step):
-	pos = np.add(pos, v)
+	pos = np.add(pos, v * step)
 	v = np.add(v, force * step / m)
 	return v, pos
 	
