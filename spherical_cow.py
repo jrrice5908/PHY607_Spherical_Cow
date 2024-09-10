@@ -127,6 +127,7 @@ if __name__ == "__main__":
     x_list, y_list = zip(*p_list)
     # print(x_list)
     # print(y_list)
+    # print(TE_list)
 
     plt.plot(x_list, y_list,
             color = '#fc5a50', # coral
@@ -145,8 +146,8 @@ if __name__ == "__main__":
     plt.clf()
     t = np.arange(len(p_list)) * size_of_timesteps
 
-    plt.plot(t, PE_list, label = "Potential Energy")
-    plt.plot(t, KE_list, label = "Kinetic Energy")
+    # plt.plot(t, PE_list, label = "Potential Energy")
+    # plt.plot(t, KE_list, label = "Kinetic Energy") 
     plt.plot(t, TE_list, label = "Total Energy")
 
     plt.title('Spherical Cow - Energy')
