@@ -6,11 +6,11 @@ import matplotlib.pyplot as plt
 #################################### global constants ####################################
 gravf_strength = 9.81 # in m/s^2
 mass = 1000
-drag_const = 0.07 # for a spherical object
+drag_const = 0 # for a spherical object
 
 ################################# user defined constants #################################
-v0 = (10, 10)     # in (vx0, vy0), a touple
-p0 = (0, 150)     # in (x0, y0)
+v0 = (1, 100)     # in (vx0, vy0), a touple
+p0 = (0, 1000)     # in (x0, y0)
 v_list = []
 p_list = []
 PE_list = []
@@ -18,7 +18,7 @@ KE_list = []
 TE_list = []
 
 # num_of_timesteps = $3
-size_of_timesteps = 0.05 # size of plot points, in seconds
+size_of_timesteps = 0.001 # size of plot points, in seconds
  
 ##################################### helper functions ##########################################
 def find_force(v_now, p_now):
