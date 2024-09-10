@@ -6,17 +6,19 @@ import matplotlib.pyplot as plt
 #################################### global constants ####################################
 gravf_strength = 9.81 # in m/s^2
 mass = 1000
-drag_const = 0.47 # for a spherical object
+drag_const = 0.07 # for a spherical object
 
 ################################# user defined constants #################################
 v0 = (10, 10)     # in (vx0, vy0), a touple
 p0 = (0, 150)     # in (x0, y0)
 v_list = []
 p_list = []
-E_list = []
+PE_list = []
+KE_list = []
+TE_list = []
 
 # num_of_timesteps = $3
-size_of_timesteps = 0.1 # size of plot points, in seconds
+size_of_timesteps = 0.05 # size of plot points, in seconds
  
 ##################################### helper functions ##########################################
 def find_force(v_now, p_now):
@@ -65,7 +67,8 @@ def find_energies(v_now, p_now):
     PE = mass * gravf_strength * height
 
     vx_now, vy_now = v_now[0], v_now[1]
-    KE = 1/2 * mass * math.sqrt(vx_now ** 2 + vy_now ** 2) **2
+    # KE = 1/2 * mass * math.sqrt(vx_now ** 2 + vy_now ** 2) **2
+    KE = 1/2 * mass * (vx_now ** 2 + vy_now ** 2)
 
     TE = PE + KE
 
@@ -82,8 +85,10 @@ if __name__ == "__main__":
     p_list.append(p0)  # adding to the lists of touples for position
     v_current = v0
     p_current = p0
-    E_current = find_energies(v_current, p_current) # finding energy for now
-    E_list.append(E_current) # append current energy to the energy list
+    PE, KE, TE = find_energies(v_current, p_current) # finding energy for now
+    PE_list.append(PE) # append current energy to the energy list
+    KE_list.append(KE)
+    TE_list.append(TE)
 
     '''
     x_list2 = []
@@ -113,12 +118,15 @@ if __name__ == "__main__":
         v_current, p_current = find_vp(v_current, p_current, size_of_timesteps)
         v_list.append(v_current)
         p_list.append(p_current)
-        # E_list.append(find_energies(v_current, p_current))
+        PE, KE, TE = find_energies(v_current, p_current) # finding energy for now
+        PE_list.append(PE) # append current energy to the energy list
+        KE_list.append(KE)
+        TE_list.append(TE)
     
 
     x_list, y_list = zip(*p_list)
-    print(x_list)
-    print(y_list)
+    # print(x_list)
+    # print(y_list)
 
     plt.plot(x_list, y_list,
             color = '#fc5a50', # coral
@@ -127,11 +135,27 @@ if __name__ == "__main__":
             markersize = 10,
             label = "Position")
     plt.title('Spherical Cow - Position Trajectory')
-    plt.xlabel('X Axis')
-    plt.ylabel('Y Axis')
+    plt.xlabel('X Position')
+    plt.ylabel('Y Position')
+    plt.legend()
 
     plot_destination = "cow_figures/cow_traj.png"
     plt.savefig(plot_destination)
+
+    plt.clf()
+    t = np.arange(len(p_list)) * size_of_timesteps
+
+    plt.plot(t, PE_list, label = "Potential Energy")
+    plt.plot(t, KE_list, label = "Kinetic Energy")
+    plt.plot(t, TE_list, label = "Total Energy")
+
+    plt.title('Spherical Cow - Energy')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Energy [J]')
+    plt.legend()
+
+    plot_destination2 = "cow_figures/cow_energies.png"
+    plt.savefig(plot_destination2) 
 
     '''
     plt.plot(x_list2, y_list2,
