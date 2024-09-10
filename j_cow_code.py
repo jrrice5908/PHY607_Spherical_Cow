@@ -20,13 +20,13 @@ def r_and_v_after_dt(r,v,tot_F, dt):
     ynew = r[1] + v[1]*dt + (1/2)*ay*(dt^2)
     rnew = [xnew, ynew]
     
-    return vnew, rnew
+    return [rnew, vnew]
 
-def energies(r,v)
+def energies(r,v):
     T = (1/2)*m*((v[0])^2+ (v[1])^2)
     V = m*g*r[1]
 
-    return T,V
+    return [T,V]
 
 ################################# Constants and initial input #################################
 
@@ -35,12 +35,38 @@ k = -1      #wind resistance constant
 m = 1000    #mass of cow
 dt = 1      #arbitrary time step, in seconds
 
-r = [x,y]       #arbitrary initial coords 
+r = [0,20]       #arbitrary initial coords 
 #   [0],[1]
-v = [vx,vy]     #arbitrary initial vel
+v = [3,4]     #arbitrary initial vel
 
 ################################# Main #################################
 
+rlist = []
+vlist = []
+flist = []
+
+while r[1] >= 0:
+
+    fcurrent = total_force_vector(r,v)
+    flist.append(fcurrent)
+
+    rcurrent = r_and_v_after_dt(r,v,fcurrent,dt)[0]
+    rlist.append(rcurrent)
+
+    vcurrent = r_and_v_after_dt(r,v,fcurrent,dt)[1]
+    vlist.append(vcurrent)
+
+    dt = dt + 1
+
+    r[0] = r[0] + rcurrent[0]
+    r[1] = r[1] + rcurrent[1]
+
+    v[0] = v[0] + vcurrent[0]
+    v[1] = v[1] + vcurrent[1]
+
+
+print(rlist)
+print(vlist)
 
 
 
